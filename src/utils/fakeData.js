@@ -125,7 +125,7 @@ const tourPackages = [
     from: 'Ташкент',
     to: 'Стамбул',
     start: '07.11.2024',
-    end: '07.20.2023',
+    end: '07.20.2024',
     includes: [
       {
         id: 1,
@@ -155,7 +155,7 @@ const tourPackages = [
     from: 'Ташкент',
     to: 'Стамбул',
     start: '07.11.2024',
-    end: '07.20.2023',
+    end: '07.20.2024',
     includes: [
       {
         id: 1,
@@ -185,7 +185,7 @@ const tourPackages = [
     from: 'Ташкент',
     to: 'Стамбул',
     start: '07.11.2024',
-    end: '07.20.2023',
+    end: '07.20.2024',
     includes: [
       {
         id: 1,
@@ -215,7 +215,7 @@ const tourPackages = [
     from: 'Ташкент',
     to: 'Стамбул',
     start: '07.11.2024',
-    end: '07.20.2023',
+    end: '07.20.2024',
     includes: [
       {
         id: 1,
@@ -245,7 +245,7 @@ const tourPackages = [
     from: 'Ташкент',
     to: 'Стамбул',
     start: '07.11.2024',
-    end: '07.20.2023',
+    end: '07.20.2024',
     includes: [
       {
         id: 1,
@@ -265,4 +265,74 @@ const tourPackages = [
     ],
   },
 ];
-export { Cities, includes, howManyTimeGiveFood, Facilities, tourPackages };
+
+const detail_includes = [
+  {
+    id: 1,
+    text: 'Завтрак',
+    icon: Dishes,
+  },
+  {
+    id: 2,
+    text: 'Завтрак',
+    icon: Dishes,
+  },
+  {
+    id: 3,
+    text: 'Завтрак',
+    icon: Dishes,
+  },
+  {
+    id: 4,
+    text: 'Завтрак',
+    icon: Dishes,
+  },
+  {
+    id: 5,
+    text: 'Завтрак',
+    icon: Dishes,
+  },
+  {
+    id: 6,
+    text: 'Завтрак',
+    icon: Dishes,
+  },
+  {
+    id: 7,
+    text: 'Завтрак',
+    icon: Dishes,
+  },
+  {
+    id: 8,
+    text: 'Завтрак',
+    icon: Dishes,
+  },
+  {
+    id: 9,
+    text: 'Завтрак',
+    icon: Dishes,
+  },
+  {
+    id: 10,
+    text: 'Завтрак',
+    icon: Dishes,
+  },
+  {
+    id: 11,
+    text: 'Завтрак',
+    icon: Dishes,
+  },
+  {
+    id: 12,
+    text: 'Завтрак',
+    icon: Dishes,
+  },
+];
+export {
+  Cities,
+  includes,
+  howManyTimeGiveFood,
+  Facilities,
+  tourPackages,
+  detail_includes,
+};

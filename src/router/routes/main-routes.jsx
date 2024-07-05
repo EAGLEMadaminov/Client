@@ -1,7 +1,12 @@
 import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import MainLayout from '../../layout/MainLayout';
-import { BlogPage, CatalogPage, HomePage } from './../../pages/index';
+import {
+  BlogPage,
+  CatalogPage,
+  HomePage,
+  DetailPage,
+} from './../../pages/index';
 
 const MainRoutes = {
   path: 'main',
@@ -24,6 +29,10 @@ const MainRoutes = {
     {
       path: 'catalog',
       element: <CatalogPage />,
+    },
+    {
+      path: 'catalog/:id',
+      element: <DetailPage />,
     },
   ],
 };

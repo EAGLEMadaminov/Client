@@ -82,7 +82,7 @@ const Filter = () => {
     }
   };
   return (
-    <div className="filter font-mon px-5 w-[300px]">
+    <div className="filter font-mon px-5 w-[400px]">
       <div className="border rounded-tl-[30px]  py-3 rounded-tr-[30px] ">
         <div className="flex px-5 py-1 justify-between ">
           <h2 className="font-[600] text-text">Страны</h2>
@@ -170,7 +170,7 @@ const Filter = () => {
       </div>
       <div className="border p-5">
         <h2 className="text-text font-[600]">Рейтинг</h2>
-        <div className="flex gap-[10px] mt-3">
+        <div className="flex gap-[10px] mt-3 flex-wrap">
           {array.map((item, index) => {
             return (
               <div
