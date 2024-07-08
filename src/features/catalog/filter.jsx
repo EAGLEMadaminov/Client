@@ -39,6 +39,9 @@ const Filter = () => {
   const [range, setRange] = useState([25, 1000]);
 
   const handleRangeChange = (range) => {
+    searchParams.set('min_price', range[0]);
+    searchParams.set('max_price', range[1]);
+    navigate({ search: searchParams.toString() });
     setRange(range);
   };
 
@@ -54,28 +57,40 @@ const Filter = () => {
       moveCityCheckboxes,
       setMoveCityCheckboxes
     );
+    changeFilterFunc('destination_city', item.name);
   };
-  const handleOnchangeFly = (e, item) => {
-    changeCustomCheckboxValue(e, item, flyCityCheckboxes, setFlyCityCheckboxes);
-    const filterParam = searchParams.get('fly_city');
-    console.log(filterParam);
-    let filterValues = filterParam ? filterParam.split(' ') : [];
-    console.log(filterValues);
 
-    if (filterValues.includes(item.name)) {
-      filterValues = filterValues.filter((f) => f !== item.name);
-      console.log(filterValues);
+  const changeFilterFunc = (searchValue, newValue) => {
+    const filterParam = searchParams.get(searchValue);
+    let filterValues = filterParam ? filterParam.split(',') : [];
+
+    if (filterValues.includes(newValue)) {
+      filterValues = filterValues.filter((f) => f !== newValue);
     } else {
-      filterValues.push(item.name);
+      filterValues.push(newValue);
     }
 
     if (filterValues.length > 0) {
-      searchParams.set('fly_city', filterValues.join(' '));
+      const encodedValues = filterValues.map((value) =>
+        encodeURIComponent(value).replace(/%20/g, '+')
+      );
+      searchParams.set(searchValue, encodedValues.join(','));
     } else {
-      searchParams.delete('fly_city');
+      searchParams.delete(searchValue);
     }
-    navigate({ search: searchParams.toString() });
+
+    const queryString = Array.from(searchParams.entries())
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&');
+
+    navigate({ search: queryString });
   };
+
+  const handleOnchangeFly = (e, item) => {
+    changeCustomCheckboxValue(e, item, flyCityCheckboxes, setFlyCityCheckboxes);
+    changeFilterFunc('fly_city', item.name);
+  };
+
   const handleIncludes = (e, item) => {
     changeCustomCheckboxValue(
       e,
@@ -83,16 +98,23 @@ const Filter = () => {
       includesCheckboxes,
       setIncludesCheckboxes
     );
+    changeFilterFunc('includes', item.name);
   };
+
   const handleSelectAllFood = () => {
     setGivenFoodTime([!selectAllTime, !selectAllTime, !selectAllTime]);
     setSelectAllTime(!selectAllTime);
   };
+
   const handleChechFood = (e, item) => {
     changeCustomCheckboxValue(e, item, givenFoodTime, setGivenFoodTime);
+    changeFilterFunc('foods', item.title);
   };
+
   const handleFacilities = (e, item) => {
+    console.log(item.name);
     changeCustomCheckboxValue(e, item, facilitiesBoxes, setFacilitiesBoxes);
+    changeFilterFunc('facilities', item.name);
   };
 
   const changeFacilityCount = () => {
