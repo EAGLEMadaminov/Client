@@ -4,14 +4,27 @@ import { addDays, format } from 'date-fns';
 import Image1 from '../assets/main/image1.png';
 import Image2 from '../assets/main/image2.png';
 import Image3 from '../assets/main/image3.png';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const [city, setCity] = useState('');
   const [date, setDate] = useState({
     from: new Date(Date.now()),
     to: addDays(Date.now(), 4),
   });
+  const navigate = useNavigate();
   const handleDatePicker = (e) => {
     setDate({ from: new Date(e[0]), to: new Date(e[1]) });
+  };
+
+  const handleSearchFunc = () => {
+    const start_date = format(date.from, 'dd.MM.yyyy');
+    const ending_date = format(date.to, 'dd.MM.yyyy');
+    if (city && Boolean(date.to) && Boolean(date.from)) {
+      navigate(
+        `/main/catalog?city=${city}&starting_date=${start_date}&ending_date=${ending_date}`
+      );
+    }
   };
   return (
     <div className="lg:w-[1200px] font-mon mx-auto flex flex-col">
@@ -40,6 +53,7 @@ const Home = () => {
             <input
               type="text"
               className="w-[90%] font-mon outline-none font-[500]"
+              onChange={(e) => setCity(e.target.value)}
               placeholder="Выберите город?"
             />
           </div>
@@ -72,11 +86,14 @@ const Home = () => {
             </p>
           </div>
           <DateRangePicker
-            className="absolute opacity-0 "
+            className="absolute opacity-0 w-[300px] "
             onChange={handleDatePicker}
           />
         </div>
-        <button className="bg-[#FF9B06] font-[600] text-[21px] text-white py-5 px-3 rounded-r-[50px] w-[250px]">
+        <button
+          onClick={handleSearchFunc}
+          className="bg-[#FF9B06] font-[600] text-[21px] text-white py-5 px-3 rounded-r-[50px] w-[250px]"
+        >
           Поиск
         </button>
       </div>

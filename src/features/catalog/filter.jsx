@@ -7,11 +7,15 @@ import {
 } from '../../utils/fakeData';
 import CustomCheckbox from '../../components/CustomCheckbox';
 import MultiRangeSlider from '../../components/MultiRangeSlider';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Filter = () => {
   const [moveCityCheckboxes, setMoveCityCheckboxes] = useState(
     new Array(Cities.length).fill(false)
   );
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
   const [facilitiesBoxes, setFacilitiesBoxes] = useState(
     new Array(Facilities.length).fill(false)
   );
@@ -53,6 +57,24 @@ const Filter = () => {
   };
   const handleOnchangeFly = (e, item) => {
     changeCustomCheckboxValue(e, item, flyCityCheckboxes, setFlyCityCheckboxes);
+    const filterParam = searchParams.get('fly_city');
+    console.log(filterParam);
+    let filterValues = filterParam ? filterParam.split(' ') : [];
+    console.log(filterValues);
+
+    if (filterValues.includes(item.name)) {
+      filterValues = filterValues.filter((f) => f !== item.name);
+      console.log(filterValues);
+    } else {
+      filterValues.push(item.name);
+    }
+
+    if (filterValues.length > 0) {
+      searchParams.set('fly_city', filterValues.join(' '));
+    } else {
+      searchParams.delete('fly_city');
+    }
+    navigate({ search: searchParams.toString() });
   };
   const handleIncludes = (e, item) => {
     changeCustomCheckboxValue(

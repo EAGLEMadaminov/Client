@@ -1,4 +1,3 @@
-import React from 'react';
 import { tourPackages } from '../utils/fakeData';
 import RelatedTour from '../components/RelatedTour';
 
