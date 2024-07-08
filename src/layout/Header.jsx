@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import Globe from '../assets/earth_icon.png';
 
 const Header = () => {
-  console.log('salom');
   return (
     <div className="my-[20px] border-b font-mon">
       <div className="items-center flex justify-between mb-3 px-[30px] rounded-[30px] w-[1200px] mx-auto">

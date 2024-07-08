@@ -1,14 +1,32 @@
 import { useState } from 'react';
 import { DateRangePicker } from '@mui/x-date-pickers-pro';
-import { format, addDays } from 'date-fns';
+import { format } from 'date-fns';
 import Filter from '../features/catalog/filter';
 import Package from '../features/catalog/package';
 import { tourPackages } from '../utils/fakeData';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Catalog = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const [city, setCity] = useState(searchParams.get('city'));
+  let starting_data = searchParams.get('starting_date').split('.');
+  let ending_date = searchParams.get('ending_date').split('.');
+  starting_data = new Date(
+    starting_data[2],
+    parseInt(starting_data[1]) - 1,
+    starting_data[0]
+  );
+  ending_date = new Date(
+    ending_date[2],
+    parseInt(ending_date[1]) - 1,
+    ending_date[0]
+  );
   const [date, setDate] = useState({
-    from: new Date(),
-    to: addDays(Date.now(), 4),
+    from: starting_data,
+    to: ending_date,
   });
   const [allPackages, setAllPackeges] = useState(tourPackages);
 
@@ -16,6 +34,14 @@ const Catalog = () => {
     setDate({ from: new Date(e[0]), to: new Date(e[1]) });
   };
 
+  const handleNewSearch = () => {
+    if (city && date.from && date.to) {
+      searchParams.set('city', city);
+      searchParams.set('starting_date', format(date.from, 'dd.MM.yyyy'));
+      searchParams.set('ending_date', format(date.to, 'dd.MM.yyyy'));
+      navigate({ search: searchParams.toString() });
+    }
+  };
   return (
     <div>
       <div className="flex lg:w-[1200px] justify-center mx-auto px-5 py-1 rounded-[50px] ">
@@ -37,6 +63,8 @@ const Catalog = () => {
               type="text"
               className="w-[90%] font-mon outline-none font-[500]"
               placeholder="Выберите город?"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
             />
           </div>
         </div>
@@ -72,7 +100,10 @@ const Catalog = () => {
             onChange={handleDatePicker}
           />
         </div>
-        <button className="bg-[#FF9B06] font-[600] text-[21px] text-white py-1 px-3 rounded-r-[50px] w-full">
+        <button
+          onClick={handleNewSearch}
+          className="bg-[#FF9B06] font-[600] text-[21px] text-white py-1 px-3 rounded-r-[50px] w-full"
+        >
           Поиск
         </button>
       </div>

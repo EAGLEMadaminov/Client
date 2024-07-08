@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 const CustomCheckBox = ({ label, onChange, checked }) => {
   return (
     <div className="font-mon">
@@ -50,4 +51,9 @@ const CustomCheckBox = ({ label, onChange, checked }) => {
   );
 };
 
+CustomCheckBox.propTypes = {
+  label: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  checked: PropTypes.bool.isRequired,
+};
 export default CustomCheckBox;

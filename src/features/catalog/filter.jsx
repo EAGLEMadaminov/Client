@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Cities,
   includes,
@@ -10,12 +10,12 @@ import MultiRangeSlider from '../../components/MultiRangeSlider';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const Filter = () => {
-  const [moveCityCheckboxes, setMoveCityCheckboxes] = useState(
-    new Array(Cities.length).fill(false)
-  );
   const location = useLocation();
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
+  const [moveCityCheckboxes, setMoveCityCheckboxes] = useState(
+    new Array(Cities.length).fill(false)
+  );
   const [facilitiesBoxes, setFacilitiesBoxes] = useState(
     new Array(Facilities.length).fill(false)
   );
@@ -31,12 +31,67 @@ const Filter = () => {
   const [givenFoodTime, setGivenFoodTime] = useState(
     new Array(howManyTimeGiveFood.length).fill(false)
   );
+  const [range, setRange] = useState([25, 1000]);
+
+  const defaultValueFunc = (searchValue, array, stateValue, setStateValue) => {
+    let ids = [];
+    if (searchValue) {
+      for (let i = 0; i <= array.length; i++) {
+        for (let j = 0; j < array.length; j++) {
+          if (array[i]?.name === searchValue[j]) {
+            ids.push(i);
+            break;
+          }
+        }
+      }
+    }
+    const updatedCheckboxes = [...stateValue];
+    ids.forEach((index) => {
+      if (index < array.length) {
+        updatedCheckboxes[index] = true;
+      }
+    });
+
+    setStateValue(updatedCheckboxes);
+  };
+
+  useEffect(() => {
+    let destination = searchParams.get('destination_city')?.split(',');
+    const flyCity = searchParams.get('fly_city')?.split(',');
+    const foods = searchParams.get('foods')?.split(',');
+    const facilities = searchParams.get('facilities')?.split(',');
+    const minPrice = searchParams.get('min_price');
+    const maxPrice = searchParams.get('max_price');
+
+    if (minPrice & maxPrice) {
+      setRange([minPrice, maxPrice]);
+    }
+
+    defaultValueFunc(
+      destination,
+      Cities,
+      moveCityCheckboxes,
+      setMoveCityCheckboxes
+    );
+    defaultValueFunc(flyCity, Cities, flyCityCheckboxes, setFlyCityCheckboxes);
+    defaultValueFunc(
+      foods,
+      howManyTimeGiveFood,
+      givenFoodTime,
+      setGivenFoodTime
+    );
+    defaultValueFunc(
+      facilities,
+      Facilities,
+      facilitiesBoxes,
+      setFacilitiesBoxes
+    );
+  }, [location.search]);
+
   const [showAllFacilities, setShowAllFacilities] = useState(false);
   const [allFacility, setAllFacility] = useState(Facilities);
   const [showMoveCities, setShowMoveCities] = useState(true);
   const [showFlyCities, setShowFlyCities] = useState(true);
-
-  const [range, setRange] = useState([25, 1000]);
 
   const handleRangeChange = (range) => {
     searchParams.set('min_price', range[0]);
@@ -108,7 +163,7 @@ const Filter = () => {
 
   const handleChechFood = (e, item) => {
     changeCustomCheckboxValue(e, item, givenFoodTime, setGivenFoodTime);
-    changeFilterFunc('foods', item.title);
+    changeFilterFunc('foods', item.name);
   };
 
   const handleFacilities = (e, item) => {
@@ -273,7 +328,7 @@ const Filter = () => {
           return (
             <CustomCheckbox
               key={time.id}
-              label={time.title}
+              label={time.name}
               checked={givenFoodTime[time.id - 1]}
               onChange={(e) => handleChechFood(e, time)}
             />
