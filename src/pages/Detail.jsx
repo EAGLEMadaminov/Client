@@ -9,13 +9,67 @@ import ReactInputMask from 'react-input-mask';
 import { detail_includes } from '../utils/fakeData';
 import Recommended from '../features/Recommended';
 import FamousTours from '../features/FamousTours';
+import { useState } from 'react';
+import axiosIntance from '../utils/libs/axios';
+import VerifyCode from '../components/VerifyCode';
+import AgreePopup from '../components/AgreePopup';
+import {
+  showVerifyPopup,
+  getPhoneNumber,
+  showAgreePopup,
+} from '../redux/slices/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import SuccessPopup from './../components/SuccessPopup';
 
 const Detail = () => {
+  const [userName, setUserName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const isShowVerifyPopup = useSelector((store) => store.auth.isShowVerify);
+  const isShowAgreePopup = useSelector((store) => store.auth.isShowAgreePopup);
+  const isShowSuccessPopup = useSelector(
+    (store) => store.auth.isShowSuccessMessage
+  );
+  const dispatch = useDispatch();
   const formatchars = {
     '-': '[0-9]',
   };
+
+  const handleBooking = async () => {
+    let token = localStorage.getItem('access_token');
+    const info = {};
+    info.name = userName;
+
+    info.phone_number = phoneNumber.replace(/\s/g, '');
+    if (userName && phoneNumber) {
+      dispatch(getPhoneNumber(phoneNumber));
+      try {
+        const { data } = await axiosIntance.post('/send-code', info);
+        if (data) {
+          console.log(data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      if (token) {
+        dispatch(showAgreePopup(true));
+      } else {
+        dispatch(showVerifyPopup(true));
+      }
+    }
+  };
   return (
     <div className="w-[1100px] mx-auto">
+      {isShowAgreePopup || isShowVerifyPopup || isShowSuccessPopup ? (
+        <div className="fixed left-0 flex justify-center items-center right-0 bottom-0 top-0 bg-[rgba(0,0,0,0.6)] z-[100]">
+          <div className="bg-white  w-[400px] text-center rounded-xl mx-auto">
+            {isShowVerifyPopup && <VerifyCode />}
+            {isShowAgreePopup && <AgreePopup name={userName} />}
+            {isShowSuccessPopup && <SuccessPopup />}
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
       <div className="flex gap-[20px] justify-between ">
         <div className="images z-10">
           <div className="flex gap-[20px]">
@@ -178,6 +232,7 @@ const Detail = () => {
               <input
                 placeholder="Введите имя"
                 id="name"
+                onChange={(e) => setUserName(e.target.value)}
                 className="placeholder:text-[#9BB8CF] active:bg-transparent focus-visible:ring-offset-0 focus-visible:ring-0  border-none active:border-none outline-none focus:outline-none focus:border-transparent"
                 type="text"
               />
@@ -209,12 +264,16 @@ const Detail = () => {
               <ReactInputMask
                 mask="998 -- --- -- --"
                 placeholder="998"
+                onChange={(e) => setPhoneNumber(e.target.value)}
                 id="phone"
                 className="w-full p-1 px-3 rounded-lg placeholder:text-[#9BB8CF]  outline-none"
                 formatChars={formatchars}
               />
             </div>
-            <button className="w-full mt-[20px] text-white bg-[#FF9B06] py-[5px] p-[10px] rounded-lg">
+            <button
+              onClick={handleBooking}
+              className="w-full mt-[20px] text-white bg-[#FF9B06] py-[5px] p-[10px] rounded-lg"
+            >
               Отправить
             </button>
           </div>

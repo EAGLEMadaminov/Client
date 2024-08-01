@@ -158,6 +158,25 @@ const Filter = () => {
 
   const handleSelectAllFood = () => {
     setGivenFoodTime([!selectAllTime, !selectAllTime, !selectAllTime]);
+    if (!selectAllTime) {
+      let string = '';
+      howManyTimeGiveFood.forEach((item) => {
+        string += item.name + ',';
+      });
+
+      searchParams.set('foods', string);
+      const queryString = Array.from(searchParams.entries())
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&');
+      // .map((value) => encodeURIComponent(value).replace(/%20/g, '+'))
+
+      console.log(searchParams.get('foods').toString());
+      navigate({ search: queryString });
+    } else {
+      searchParams.delete('foods');
+      navigate({ search: searchParams.toString() });
+    }
+
     setSelectAllTime(!selectAllTime);
   };
 
